@@ -810,20 +810,17 @@ public class ZooInspectorManagerImpl implements ZooInspectorManager {
             }
         }
         FileWriter writer = new FileWriter(selectedFile);
-        try {
-            BufferedWriter buff = new BufferedWriter(writer);
-            try {
-                for (String nodeViewersClassName : nodeViewersClassNames) {
-                    buff.append(nodeViewersClassName);
-                    buff.append("\n");
-                }
-            } finally {
-                buff.flush();
-                buff.close();
-            }
-        } finally {
-            writer.close();
-        }
+		try (java.io.BufferedWriter buff = new java.io.BufferedWriter(writer)) {
+			try {
+				for (java.lang.String nodeViewersClassName : nodeViewersClassNames) {
+					buff.append(nodeViewersClassName);
+					buff.append("\n");
+				}
+			} finally {
+				buff.flush();
+				buff.close();
+			}
+		}
     }
 
     /*

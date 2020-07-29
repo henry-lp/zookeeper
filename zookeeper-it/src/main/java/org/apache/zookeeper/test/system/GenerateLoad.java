@@ -695,21 +695,22 @@ public class GenerateLoad {
     }
 
     private static String getMode(String hostPort) throws NumberFormatException, UnknownHostException, IOException {
-        String parts[] = hostPort.split(":");
-        Socket s = new Socket(parts[0], Integer.parseInt(parts[1]));
-        s.getOutputStream().write("stat".getBytes());
-        BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-        String line;
-        try {
-          while((line = br.readLine()) != null) {
-            if (line.startsWith("Mode: ")) {
-              return line.substring(6);
-            }
-          }
-          return "unknown";
-        } finally {
-          s.close();
-        }
+        String parts = hostPort.split(":");
+		try (java.net.Socket s = new java.net.Socket(parts[0], java.lang.Integer.parseInt(parts[1]))) {
+			s.getOutputStream().write("stat".getBytes());
+			java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(s.getInputStream()));
+			java.lang.String line;
+			try {
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith("Mode: ")) {
+						return line.substring(6);
+					}
+				} 
+				return "unknown";
+			} finally {
+				s.close();
+			}
+		}
     }
 
     private static void doUsage() {

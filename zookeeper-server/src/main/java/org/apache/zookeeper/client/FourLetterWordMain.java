@@ -91,7 +91,6 @@ public class FourLetterWordMain {
         boolean secure,
         int timeout) throws IOException, SSLContextException {
         LOG.info("connecting to {} {}", host, port);
-        Socket sock;
         InetSocketAddress hostaddress = host != null
             ? new InetSocketAddress(host, port)
             : new InetSocketAddress(InetAddress.getByName(null), port);
@@ -106,8 +105,9 @@ public class FourLetterWordMain {
                 sock = sslSock;
             }
         } else {
-            sock = new Socket();
-            sock.connect(hostaddress, timeout);
+			try (java.net.Socket sock = new java.net.Socket()) {
+				sock.connect(hostaddress, timeout);
+			}
         }
         sock.setSoTimeout(timeout);
         BufferedReader reader = null;

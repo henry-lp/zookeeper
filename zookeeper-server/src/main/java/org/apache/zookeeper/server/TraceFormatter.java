@@ -38,49 +38,34 @@ public class TraceFormatter {
             System.err.println("USAGE: TraceFormatter trace_file");
             ServiceUtils.requestSystemExit(ExitCode.INVALID_INVOCATION.getValue());
         }
-        FileChannel fc = new FileInputStream(args[0]).getChannel();
-        while (true) {
-            ByteBuffer bb = ByteBuffer.allocate(41);
-            fc.read(bb);
-            bb.flip();
-
-            byte app = bb.get();
-            long time = bb.getLong();
-            long id = bb.getLong();
-            int cxid = bb.getInt();
-            long zxid = bb.getLong();
-            int txnType = bb.getInt();
-            int type = bb.getInt();
-            int len = bb.getInt();
-            bb = ByteBuffer.allocate(len);
-            fc.read(bb);
-            bb.flip();
-            String path = "n/a";
-            if (bb.remaining() > 0) {
-                if (type != OpCode.createSession) {
-                    int pathLen = bb.getInt();
-                    byte[] b = new byte[pathLen];
-                    bb.get(b);
-                    path = new String(b);
-                }
-            }
-            System.out.println(DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                    DateFormat.LONG).format(new Date(time))
-                    + ": "
-                    + (char) app
-                    + " id=0x"
-                    + Long.toHexString(id)
-                    + " cxid="
-                    + cxid
-                    + " op="
-                    + Request.op2String(type)
-                    + " zxid=0x"
-                    + Long.toHexString(zxid)
-                    + " txnType="
-                    + txnType
-                    + " len="
-                    + len + " path=" + path);
-        }
+		try (java.nio.channels.FileChannel fc = new java.io.FileInputStream(args[0]).getChannel()) {
+			while (true) {
+				java.nio.ByteBuffer bb = java.nio.ByteBuffer.allocate(41);
+				fc.read(bb);
+				bb.flip();
+				byte app = bb.get();
+				long time = bb.getLong();
+				long id = bb.getLong();
+				int cxid = bb.getInt();
+				long zxid = bb.getLong();
+				int txnType = bb.getInt();
+				int type = bb.getInt();
+				int len = bb.getInt();
+				bb = java.nio.ByteBuffer.allocate(len);
+				fc.read(bb);
+				bb.flip();
+				java.lang.String path = "n/a";
+				if (bb.remaining() > 0) {
+					if (type != org.apache.zookeeper.ZooDefs.OpCode.createSession) {
+						int pathLen = bb.getInt();
+						byte[] b = new byte[pathLen];
+						bb.get(b);
+						path = new java.lang.String(b);
+					}
+				}
+				java.lang.System.out.println((((((((((((((((java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.LONG).format(new java.util.Date(time)) + ": ") + ((char) (app))) + " id=0x") + java.lang.Long.toHexString(id)) + " cxid=") + cxid) + " op=") + org.apache.zookeeper.server.Request.op2String(type)) + " zxid=0x") + java.lang.Long.toHexString(zxid)) + " txnType=") + txnType) + " len=") + len) + " path=") + path);
+			} 
+		}
     }
 
 }

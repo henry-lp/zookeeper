@@ -122,8 +122,8 @@ public class Leader extends LearnerMaster {
     // VisibleForTesting
     protected boolean quorumFormed = false;
 
-    // the follower acceptor thread
-    volatile LearnerCnxAcceptor cnxAcceptor = null;
+    
+	volatile LearnerCnxAcceptor cnxAcceptor = null;
 
     // list of all the learners, including followers and observers
     private final HashSet<LearnerHandler> learners = new HashSet<LearnerHandler>();
@@ -306,12 +306,11 @@ public class Leader extends LearnerMaster {
     }
 
     Optional<ServerSocket> createServerSocket(InetSocketAddress address, boolean portUnification, boolean sslQuorum) {
-        ServerSocket serverSocket;
         try {
             if (portUnification || sslQuorum) {
                 serverSocket = new UnifiedServerSocket(self.getX509Util(), portUnification);
             } else {
-                serverSocket = new ServerSocket();
+				try (java.net.ServerSocket serverSocket = new java.net.ServerSocket()) 
             }
             serverSocket.setReuseAddress(true);
             serverSocket.bind(address);
@@ -1758,4 +1757,4 @@ public class Leader extends LearnerMaster {
         }
     }
 
-}
+	}

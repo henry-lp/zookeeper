@@ -100,20 +100,21 @@ public class SnapStream {
      * @throws IOException
      */
     public static CheckedInputStream getInputStream(File file) throws IOException {
-        FileInputStream fis = new FileInputStream(file);
-        InputStream is;
-        switch (getStreamMode(file.getName())) {
-        case GZIP:
-            is = new GZIPInputStream(fis);
-            break;
-        case SNAPPY:
-            is = new SnappyInputStream(fis);
-            break;
-        case CHECKED:
-        default:
-            is = new BufferedInputStream(fis);
-        }
-        return new CheckedInputStream(is, new Adler32());
+		try (java.io.FileInputStream fis = new java.io.FileInputStream(file)) {
+			java.io.InputStream is;
+			switch (org.apache.zookeeper.server.persistence.SnapStream.getStreamMode(file.getName())) {
+				case GZIP :
+					is = new java.util.zip.GZIPInputStream(fis);
+					break;
+				case SNAPPY :
+					is = new org.xerial.snappy.SnappyInputStream(fis);
+					break;
+				case CHECKED :
+				default :
+					is = new java.io.BufferedInputStream(fis);
+			}
+			return new java.util.zip.CheckedInputStream(is, new java.util.zip.Adler32());
+		}
     }
 
     /**

@@ -355,21 +355,18 @@ public class FileTxnLog implements TxnLog, Closeable {
         // the highest zxid
         long zxid = maxLog;
         TxnIterator itr = null;
-        try {
-            FileTxnLog txn = new FileTxnLog(logDir);
-            itr = txn.read(maxLog);
-            while (true) {
-                if (!itr.next()) {
-                    break;
-                }
-                TxnHeader hdr = itr.getHeader();
-                zxid = hdr.getZxid();
-            }
-        } catch (IOException e) {
-            LOG.warn("Unexpected exception", e);
-        } finally {
-            close(itr);
-        }
+		try (org.apache.zookeeper.server.persistence.FileTxnLog txn = new org.apache.zookeeper.server.persistence.FileTxnLog(logDir)) {
+			itr = txn.read(maxLog);
+			while (true) {
+				if (!itr.next()) {
+					break;
+				}
+				org.apache.zookeeper.txn.TxnHeader hdr = itr.getHeader();
+				zxid = hdr.getZxid();
+			} 
+		} catch (java.io.IOException e) {
+			org.apache.zookeeper.server.persistence.FileTxnLog.LOG.warn("Unexpected exception", e);
+		}
         return zxid;
     }
 
@@ -469,27 +466,22 @@ public class FileTxnLog implements TxnLog, Closeable {
      */
     public boolean truncate(long zxid) throws IOException {
         FileTxnIterator itr = null;
-        try {
-            itr = new FileTxnIterator(this.logDir, zxid);
-            PositionInputStream input = itr.inputStream;
-            if (input == null) {
-                throw new IOException("No log files found to truncate! This could "
-                                      + "happen if you still have snapshots from an old setup or "
-                                      + "log files were deleted accidentally or dataLogDir was changed in zoo.cfg.");
-            }
-            long pos = input.getPosition();
-            // now, truncate at the current position
-            RandomAccessFile raf = new RandomAccessFile(itr.logFile, "rw");
-            raf.setLength(pos);
-            raf.close();
-            while (itr.goToNextLog()) {
-                if (!itr.logFile.delete()) {
-                    LOG.warn("Unable to truncate {}", itr.logFile);
-                }
-            }
-        } finally {
-            close(itr);
-        }
+		try (// now, truncate at the current position
+		java.io.RandomAccessFile raf = new java.io.RandomAccessFile(itr.logFile, "rw")) {
+			itr = new org.apache.zookeeper.server.persistence.FileTxnLog.FileTxnIterator(this.logDir, zxid);
+			org.apache.zookeeper.server.persistence.FileTxnLog.PositionInputStream input = itr.inputStream;
+			if (input == null) {
+				throw new java.io.IOException("No log files found to truncate! This could " + ("happen if you still have snapshots from an old setup or " + "log files were deleted accidentally or dataLogDir was changed in zoo.cfg."));
+			}
+			long pos = input.getPosition();
+			raf.setLength(pos);
+			raf.close();
+			while (itr.goToNextLog()) {
+				if (!itr.logFile.delete()) {
+					org.apache.zookeeper.server.persistence.FileTxnLog.LOG.warn("Unable to truncate {}", itr.logFile);
+				}
+			} 
+		}
         return true;
     }
 

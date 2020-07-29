@@ -165,11 +165,8 @@ public class QuorumCnxManager {
      */
     public final BlockingQueue<Message> recvQueue;
 
-    /*
-     * Shutdown flag
-     */
-
-    volatile boolean shutdown = false;
+    
+	volatile boolean shutdown = false;
 
     /*
      * Listener thread
@@ -705,16 +702,8 @@ public class QuorumCnxManager {
         }
     }
 
-    /**
-     * Try to establish a connection to server with id sid using its electionAddr.
-     * The function will return quickly and the connection will be established asynchronously.
-     *
-     * VisibleForTesting.
-     *
-     *  @param sid  server id
-     *  @return boolean success indication
-     */
-    synchronized boolean connectOne(long sid, MultipleAddresses electionAddr) {
+    
+	synchronized boolean connectOne(long sid, MultipleAddresses electionAddr) {
         if (senderWorkerMap.get(sid) != null) {
             LOG.debug("There is a connection already for server {}", sid);
             if (self.isMultiAddressEnabled() && electionAddr.size() > 1 && self.isMultiAddressReachabilityCheckEnabled()) {
@@ -732,13 +721,8 @@ public class QuorumCnxManager {
         return initiateConnectionAsync(electionAddr, sid);
     }
 
-    /**
-     * Try to establish a connection to server with id sid.
-     * The function will return quickly and the connection will be established asynchronously.
-     *
-     *  @param sid  server id
-     */
-    synchronized void connectOne(long sid) {
+    
+	synchronized void connectOne(long sid) {
         if (senderWorkerMap.get(sid) != null) {
             LOG.debug("There is a connection already for server {}", sid);
             if (self.isMultiAddressEnabled() && self.isMultiAddressReachabilityCheckEnabled()) {
@@ -1118,7 +1102,6 @@ public class QuorumCnxManager {
             }
 
             private ServerSocket createNewServerSocket() throws IOException {
-                ServerSocket socket;
 
                 if (portUnification) {
                     LOG.info("Creating TLS-enabled quorum server socket");
@@ -1127,7 +1110,7 @@ public class QuorumCnxManager {
                     LOG.info("Creating TLS-only quorum server socket");
                     socket = new UnifiedServerSocket(self.getX509Util(), false);
                 } else {
-                    socket = new ServerSocket();
+						try (java.net.ServerSocket socket = new java.net.ServerSocket()) 
                 }
 
                 socket.setReuseAddress(true);

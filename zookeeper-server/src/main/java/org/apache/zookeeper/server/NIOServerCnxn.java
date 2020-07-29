@@ -496,38 +496,32 @@ public class NIOServerCnxn extends ServerCnxn {
                 LOG.error("Error cancelling command selection key", e);
             }
         }
-
-        final PrintWriter pwriter = new PrintWriter(new BufferedWriter(new SendBufferWriter()));
-
-        // ZOOKEEPER-2693: don't execute 4lw if it's not enabled.
-        if (!FourLetterCommands.isEnabled(cmd)) {
-            LOG.debug("Command {} is not executed because it is not in the whitelist.", cmd);
-            NopCommand nopCmd = new NopCommand(
-                pwriter,
-                this,
-                cmd + " is not executed because it is not in the whitelist.");
-            nopCmd.start();
-            return true;
-        }
-
-        LOG.info("Processing {} command from {}", cmd, sock.socket().getRemoteSocketAddress());
-
-        if (len == FourLetterCommands.setTraceMaskCmd) {
-            incomingBuffer = ByteBuffer.allocate(8);
-            int rc = sock.read(incomingBuffer);
-            if (rc < 0) {
-                throw new IOException("Read error");
-            }
-            incomingBuffer.flip();
-            long traceMask = incomingBuffer.getLong();
-            ZooTrace.setTextTraceLevel(traceMask);
-            SetTraceMaskCommand setMask = new SetTraceMaskCommand(pwriter, this, traceMask);
-            setMask.start();
-            return true;
-        } else {
-            CommandExecutor commandExecutor = new CommandExecutor();
-            return commandExecutor.execute(this, pwriter, len, zkServer, factory);
-        }
+		try (final java.io.PrintWriter pwriter = new java.io.PrintWriter(new java.io.BufferedWriter(new org.apache.zookeeper.server.NIOServerCnxn.SendBufferWriter()))) {
+			// ZOOKEEPER-2693: don't execute 4lw if it's not enabled.
+			if (!org.apache.zookeeper.server.command.FourLetterCommands.isEnabled(cmd)) {
+				org.apache.zookeeper.server.NIOServerCnxn.LOG.debug("Command {} is not executed because it is not in the whitelist.", cmd);
+				org.apache.zookeeper.server.command.NopCommand nopCmd = new org.apache.zookeeper.server.command.NopCommand(pwriter, this, cmd + " is not executed because it is not in the whitelist.");
+				nopCmd.start();
+				return true;
+			}
+			org.apache.zookeeper.server.NIOServerCnxn.LOG.info("Processing {} command from {}", cmd, sock.socket().getRemoteSocketAddress());
+			if (len == org.apache.zookeeper.server.command.FourLetterCommands.setTraceMaskCmd) {
+				incomingBuffer = java.nio.ByteBuffer.allocate(8);
+				int rc = sock.read(incomingBuffer);
+				if (rc < 0) {
+					throw new java.io.IOException("Read error");
+				}
+				incomingBuffer.flip();
+				long traceMask = incomingBuffer.getLong();
+				org.apache.zookeeper.server.ZooTrace.setTextTraceLevel(traceMask);
+				org.apache.zookeeper.server.command.SetTraceMaskCommand setMask = new org.apache.zookeeper.server.command.SetTraceMaskCommand(pwriter, this, traceMask);
+				setMask.start();
+				return true;
+			} else {
+				org.apache.zookeeper.server.command.CommandExecutor commandExecutor = new org.apache.zookeeper.server.command.CommandExecutor();
+				return commandExecutor.execute(this, pwriter, len, zkServer, factory);
+			}
+		}
     }
 
     /** Reads the first 4 bytes of lenBuffer, which could be true length or
