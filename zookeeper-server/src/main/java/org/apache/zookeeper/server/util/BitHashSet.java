@@ -137,6 +137,9 @@ public class BitHashSet implements Iterable<Integer> {
 
             @Override
             public Integer next() {
+				if (!hasNext()) {
+					throw new java.util.NoSuchElementException();
+				}
                 int bit = elementBits.nextSetBit(bitIndex);
                 bitIndex = bit + 1;
                 returnedCount++;

@@ -57,6 +57,9 @@ public class TxnLogProposalIterator implements Iterator<Proposal> {
      */
     @Override
     public Proposal next() {
+		if (!hasNext()) {
+			throw new java.util.NoSuchElementException();
+		}
 
         Proposal p = new Proposal();
         try {
