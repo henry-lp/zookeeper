@@ -98,7 +98,7 @@ public class LocalSessionRequestTest extends ZKTestCase {
      */
     public void testOpenCloseSession(boolean onLeader) throws Exception {
         int leaderIdx = qb.getLeaderIndex();
-        assertFalse("No leader in quorum?", leaderIdx == -1);
+        org.junit.Assert.assertFalse("No leader in quorum?", leaderIdx == -1);
         int followerIdx = (leaderIdx + 1) % 5;
         int testPeerIdx = onLeader ? leaderIdx : followerIdx;
         int verifyPeerIdx = onLeader ? followerIdx : leaderIdx;
@@ -132,7 +132,7 @@ public class LocalSessionRequestTest extends ZKTestCase {
         // the closeSession request to propagate to other machines (if there is a bug)
         // Since it is time sensitive, we have false negative when test
         // machine is under load
-        Thread.sleep(CONNECTION_TIMEOUT * 2);
+        Thread.sleep((long) org.apache.zookeeper.test.LocalSessionRequestTest.CONNECTION_TIMEOUT * 2);
 
         // Validate that we don't see any txn from the first session
         validateRequestLog(localSessionId1, verifyPeerIdx);

@@ -71,11 +71,8 @@ public class LearnerHandler extends ZooKeeperThread {
 
     final LearnerMaster learnerMaster;
 
-    /** Deadline for receiving the next ack. If we are bootstrapping then
-     * it's based on the initLimit, if we are done bootstrapping it's based
-     * on the syncLimit. Once the deadline is past this learner should
-     * be considered no longer "sync'd" with the leader. */
-    volatile long tickOfNextAckDeadline;
+    
+	volatile long tickOfNextAckDeadline;
 
     /**
      * ZooKeeper server identifier of this learner
@@ -1107,7 +1104,7 @@ public class LearnerHandler extends ZooKeeperThread {
 
     static long packetSize(QuorumPacket p) {
         /* Approximate base size of QuorumPacket: int + long + byte[] + List */
-        long size = 4 + 8 + 8 + 8;
+        long size = (((long) 4 + 8) + 8) + 8;
         byte[] data = p.getData();
         if (data != null) {
             size += data.length;

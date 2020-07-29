@@ -169,7 +169,7 @@ public class FileTxnLogTest extends ZKTestCase {
     // Overhead is about 150 bytes for txn created in this test
     private static final int NODE_SIZE = 1024;
     private final long PREALLOCATE = 512;
-    private final long LOG_SIZE_LIMIT = 1024 * 4;
+    private final long LOG_SIZE_LIMIT = (long) 1024 * 4;
 
     /**
      * Test that log size get update correctly

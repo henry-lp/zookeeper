@@ -226,7 +226,7 @@ public class Login {
                                     --retry;
                                     // sleep for 10 seconds
                                     try {
-                                        Thread.sleep(10 * 1000);
+                                        Thread.sleep((long) 10 * 1000);
                                     } catch (InterruptedException ie) {
                                         LOG.error("Interrupted while renewing TGT, exiting Login thread");
                                         return;
@@ -254,7 +254,7 @@ public class Login {
                                     --retry;
                                     // sleep for 10 seconds.
                                     try {
-                                        Thread.sleep(10 * 1000);
+                                        Thread.sleep((long) 10 * 1000);
                                     } catch (InterruptedException e) {
                                         LOG.error("Interrupted during login retry after LoginException:", le);
                                         throw le;

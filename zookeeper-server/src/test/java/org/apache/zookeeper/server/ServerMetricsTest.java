@@ -65,19 +65,19 @@ public class ServerMetricsTest extends ZKTestCase {
         long expectedMax = Arrays.stream(values).max().orElse(0);
         long expectedSum = Arrays.stream(values).sum();
         long expectedCnt = values.length;
-        double expectedAvg = expectedSum / Math.max(1, expectedCnt);
+        double expectedAvg = (double) expectedSum / Math.max(1, expectedCnt);
 
-        assertEquals(expectedAvg, metric.getAvg(), 200);
-        assertEquals(expectedMin, metric.getMin());
-        assertEquals(expectedMax, metric.getMax());
-        assertEquals(expectedCnt, metric.getCount());
-        assertEquals(expectedSum, metric.getTotal());
+        org.junit.Assert.assertEquals(expectedAvg, metric.getAvg(), 200);
+        org.junit.Assert.assertEquals(expectedMin, metric.getMin());
+        org.junit.Assert.assertEquals(expectedMax, metric.getMax());
+        org.junit.Assert.assertEquals(expectedCnt, metric.getCount());
+        org.junit.Assert.assertEquals(expectedSum, metric.getTotal());
 
         final Map<String, Object> results = metric.values();
-        assertEquals(expectedMax, (long) results.get("max_test"));
-        assertEquals(expectedMin, (long) results.get("min_test"));
-        assertEquals(expectedCnt, (long) results.get("cnt_test"));
-        assertEquals(expectedAvg, (double) results.get("avg_test"), 200);
+        org.junit.Assert.assertEquals(expectedMax, (long) results.get("max_test"));
+        org.junit.Assert.assertEquals(expectedMin, (long) results.get("min_test"));
+        org.junit.Assert.assertEquals(expectedCnt, (long) results.get("cnt_test"));
+        org.junit.Assert.assertEquals(expectedAvg, (double) results.get("avg_test"), 200);
 
         metric.reset();
     }

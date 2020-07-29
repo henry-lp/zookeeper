@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class FilePadding {
 
     private static final Logger LOG;
-    private static long preAllocSize = 65536 * 1024;
+    private static long preAllocSize = (long) 65536 * 1024;
     private static final ByteBuffer fill = ByteBuffer.allocateDirect(1);
 
     static {

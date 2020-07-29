@@ -188,7 +188,7 @@ public class CommitProcessorTest extends ZKTestCase {
                     } else {
                         sendReadRequest();
                     }
-                    Thread.sleep(5 + rand.nextInt(95));
+                    Thread.sleep((long) 5 + rand.nextInt(95));
                 }
             } catch (Exception e) {
                 LOG.error("Uncaught exception in test: ", e);
@@ -331,7 +331,7 @@ public class CommitProcessorTest extends ZKTestCase {
                     // If it is a read-only test, there will be no proposals..
                     if (!proposals.isEmpty()) {
                         Request request = proposals.take();
-                        Thread.sleep(5 + rand.nextInt(95));
+                        Thread.sleep((long) 5 + rand.nextInt(95));
                         commitProcessor.commit(request);
                     }
                 }
@@ -406,7 +406,7 @@ public class CommitProcessorTest extends ZKTestCase {
 
             // Insert random delay to test thread race conditions
             try {
-                Thread.sleep(5 + rand.nextInt(25));
+                Thread.sleep((long) 5 + rand.nextInt(25));
             } catch (InterruptedException e) {
                 // ignore
             }

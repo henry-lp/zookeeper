@@ -200,7 +200,7 @@ public class GenerateLoad {
             try {
                 currentInterval = Time.currentElapsedTime() / INTERVAL;
                 // Give things time to report;
-                Thread.sleep(INTERVAL * 2);
+                Thread.sleep((long) org.apache.zookeeper.test.system.GenerateLoad.INTERVAL * 2);
                 long min = 99999;
                 long max = 0;
                 long total = 0;
@@ -654,7 +654,7 @@ public class GenerateLoad {
                 String line;
                 while ((line = is.readLine()) != null) {
                     try {
-                        String cmdNumber[] = line.split(" ");
+                        String cmdNumber = line.split(" ");
                         if (cmdNumber[0].equals("percentage")
                                 && cmdNumber.length > 1) {
                             int number = Integer.parseInt(cmdNumber[1]);
@@ -666,7 +666,7 @@ public class GenerateLoad {
                         } else if (cmdNumber[0].equals("sleep")
                                 && cmdNumber.length > 1) {
                             int number = Integer.parseInt(cmdNumber[1]);
-                            Thread.sleep(number * 1000);
+                            Thread.sleep((long) number * 1000);
                         } else if (cmdNumber[0].equals("save")
                                 && cmdNumber.length > 1) {
                             sf = new PrintStream(cmdNumber[1]);
